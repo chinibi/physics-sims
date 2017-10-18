@@ -21,7 +21,7 @@ function RungeKutta(ode, stepSize, T_n, y_n) {
  * split into a system of two first-order ODEs
  *
  * @param ode1,ode2 1st order ODEs to be iterated over
- * @param stepSize higher values give greater resolution and accuracy in exchange for computation time
+ * @param stepSize lower values give greater resolution and accuracy in exchange for computation time
  * @param t the current value of the independent variable, increased by stepSize each iteration
  * @param y,z the current approximate value of the functions at t being solved for in the ODEs
  */
@@ -31,13 +31,12 @@ function SecondOrderODE_RK(ode1, ode2, stepSize, t, y, z) {
 
 	k[0] = ode1(t, y, z);
 	l[0] = ode2(t, y, z);
-	k[1] = ode1(t + stepSize / 2, y+k[0]/2, z+l[0]/2);
-	l[1] = ode2(t + stepSize / 2, y+k[0]/2, z+l[0]/2);
-	k[2] = ode1(t + stepSize / 2, y+k[1]/2, z+l[1]/2);
-	l[2] = ode2(t + stepSize / 2, y+k[1]/2, z+l[1]/2);
-	k[3] = ode1(t + stepSize    , y+k[2]  , z+l[2]  );
-	l[3] = ode2(t + stepSize    , y+k[2]  , z+l[2]  );
-	console.log(k, l);
+	k[1] = ode1(t + stepSize / 2, y+k[0]*stepSize/2, z+l[0]*stepSize/2);
+	l[1] = ode2(t + stepSize / 2, y+k[0]*stepSize/2, z+l[0]*stepSize/2);
+	k[2] = ode1(t + stepSize / 2, y+k[1]*stepSize/2, z+l[1]*stepSize/2);
+	l[2] = ode2(t + stepSize / 2, y+k[1]*stepSize/2, z+l[1]*stepSize/2);
+	k[3] = ode1(t + stepSize    , y+k[2]*stepSize  , z+l[2]*stepSize  );
+	l[3] = ode2(t + stepSize    , y+k[2]*stepSize  , z+l[2]*stepSize  );
 
 	yNext = y + (stepSize / 6) * (k[0] + 2*k[1] + 2*k[2] + k[3]);
 	zNext = z + (stepSize / 6) * (l[0] + 2*l[1] + 2*l[2] + l[3]);
@@ -87,7 +86,7 @@ function sampleODE(t, y) {
 const stepSize = 0.2;
 let theta = Math.PI/4;
 let omega = 0;
-for (t=0; t<1; t+=stepSize) {
+for (t=0; t<10; t+=stepSize) {
 	const result = SecondOrderODE_RK(pendulumODE1, pendulumODE2, stepSize, t, theta, omega);
 	console.log({
 		t,
