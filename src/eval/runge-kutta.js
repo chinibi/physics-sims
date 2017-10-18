@@ -1,4 +1,4 @@
-function RungeKutta(ode, stepSize, T_n, y_n) {
+PhysicsSim.iterMethod.RungeKutta = function(ode, stepSize, T_n, y_n) {
 	var k1 = ode(T_n, y_n);
 	console.log( 'k1: ', {t: T_n, y: y_n} );
 	var k2 = ode(T_n + stepSize / 2, y_n + stepSize * k1 / 2);
@@ -25,9 +25,9 @@ function RungeKutta(ode, stepSize, T_n, y_n) {
  * @param t the current value of the independent variable, increased by stepSize each iteration
  * @param y,z the current approximate value of the functions at t being solved for in the ODEs
  */
-function SecondOrderODE_RK(ode1, ode2, stepSize, t, y, z) {
-	let k = [];
-	let l = [];
+PhysicsSim.iterMethod.RungeKutta_2ndOrderODE = function(ode1, ode2, stepSize, t, y, z) {
+	var k = [];
+	var l = [];
 
 	k[0] = ode1(t, y, z);
 	l[0] = ode2(t, y, z);
@@ -41,58 +41,5 @@ function SecondOrderODE_RK(ode1, ode2, stepSize, t, y, z) {
 	yNext = y + (stepSize / 6) * (k[0] + 2*k[1] + 2*k[2] + k[3]);
 	zNext = z + (stepSize / 6) * (l[0] + 2*l[1] + 2*l[2] + l[3]);
 
-	return [yNext, zNext];
-}
-
-/**
- * Simple pendulum
- *
- * The equation of motion is: d²θ/dt² = -(g/l)sin(θ)
- * where θ is the angle from the negative y-axis going counterclockwise,
- * l is the length of the pendulum arm, and g is the acceleration from gravity.
- *
- * We need to use first-order ODEs to numerically calculate the motion
- * First define ω = dθ/dt. It follows that dω/dt = d²θ/dt² = - g*sin(θ) / l
- *
- * Our system to solve is now:
- *     dθ/dt = ω
- *     dω/dt = -(g/l)sin(θ)
- */
-function pendulumODE1(time = null, theta = null, omega = null) {
-	return omega;
-}
-
-function pendulumODE2(time = null, theta = null, omega = null) {
-	const g = 9.81;
-	const pendulumLength = 10;
-	return -1 * g * Math.sin(theta) / pendulumLength;
-}
-
-
-
-
-
-/* Enter y'(t) */
-/* y'(t) = -2 t y(t) */
-function sampleODE(t, y) {
-	return -2 * t * y;
-}
-
-//console.log(RungeKutta(sampleODE, 0.5, 0.5, 1.55729));
-
-// Perform numerical computation
-
-// Initial condition; enter y(0)
-const stepSize = 0.2;
-let theta = Math.PI/4;
-let omega = 0;
-for (t=0; t<10; t+=stepSize) {
-	const result = SecondOrderODE_RK(pendulumODE1, pendulumODE2, stepSize, t, theta, omega);
-	console.log({
-		t,
-		theta: result[0]
-	});
-
-	theta = result[0];
-	omega = result[1];
+	return {yNext: yNext, zNext: zNext};
 }
