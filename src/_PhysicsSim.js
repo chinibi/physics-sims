@@ -16,6 +16,24 @@ var PhysicsSim = {
 	//
 	// 	// The origin will be set by the currently selected simulation
 	// }
-	iterMethod = {};
-	model = {};
-}
+	ctx: null,
+	iterMethod: {},
+	model: {},
+
+	activeModel: {},
+
+	init: function(canvasElementSelector) {
+		var canvas = document.getElementById(canvasElementSelector);
+		PhysicsSim.ctx = canvas.getContext('2d');
+	},
+
+	loadModel: function(modelName) {
+		PhysicsSim.activeModel = new PhysicsSim.model[modelName];
+		PhysicsSim.activeModel.draw();
+	}
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+	PhysicsSim.init('sim-canvas');
+	PhysicsSim.loadModel('Ball');
+});
