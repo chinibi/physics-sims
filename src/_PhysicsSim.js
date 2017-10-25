@@ -1,22 +1,7 @@
 var PhysicsSim = {
-	// canvas: document.getElementById(canvasElementSelector);
-	// this.ctx = null;
-	//
-	// this.init = function() {
-	// 	if (!this.canvas) {
-	// 		console.error('No element was selected to display the sim on.');
-	// 		return false;
-	// 	}
-	//
-	// 	// Initialize the canvas element
-	// 	this.ctx = this.canvas.getContext('2d');
-	//
-	// 	// change to Cartesian coordinates
-	// 	this.ctx.scale(1, -1);
-	//
-	// 	// The origin will be set by the currently selected simulation
-	// }
+	canvas: null,
 	ctx: null,
+	animationID: null,
 	iterMethod: {},
 	model: {},
 
@@ -24,16 +9,20 @@ var PhysicsSim = {
 
 	init: function(canvasElementSelector) {
 		var canvas = document.getElementById(canvasElementSelector);
+		PhysicsSim.canvas = canvas;
 		PhysicsSim.ctx = canvas.getContext('2d');
 	},
 
-	loadModel: function(modelName) {
-		PhysicsSim.activeModel = new PhysicsSim.model[modelName];
+	animateModel: function() {
+		PhysicsSim.ctx.clearRect(0, 0, PhysicsSim.canvas.clientWidth, PhysicsSim.canvas.clientHeight);
 		PhysicsSim.activeModel.draw();
+		PhysicsSim.activeModel.setNextPosition();
+		PhysicsSim.animationID = window.requestAnimationFrame(PhysicsSim.animateModel);
+	},
+
+	loadModel: function(modelName) {
+		window.cancelAnimationFrame(PhysicsSim.animationID);
+		PhysicsSim.activeModel = new PhysicsSim.model[modelName];
+		PhysicsSim.animateModel();
 	}
 };
-
-document.addEventListener('DOMContentLoaded', function() {
-	PhysicsSim.init('sim-canvas');
-	PhysicsSim.loadModel('Ball');
-});

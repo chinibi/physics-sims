@@ -4,9 +4,11 @@
  */
 
 PhysicsSim.model.Ball = function() {
-	this.x = 200;
-	this.y = 300;
+	this.x = 300;
+	this.y = 200;
 	this.radius = 15;
+	this.dx = 1;
+	this.dy = 0;
 	this.draw = function() {
 		PhysicsSim.ctx.save();
 		PhysicsSim.ctx.beginPath();
@@ -16,4 +18,17 @@ PhysicsSim.model.Ball = function() {
 		PhysicsSim.ctx.fill();
 		PhysicsSim.ctx.restore();
 	}
+	this.setNextPosition = function() {
+		this.x += this.dx;
+		this.y += this.dy;
+	}
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+	PhysicsSim.init('sim-canvas');
+});
+
+var $loadButton = document.getElementById('controls-change-model');
+$loadButton.addEventListener('click', function() {
+	PhysicsSim.loadModel('Ball');
+});
