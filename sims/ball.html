@@ -3,6 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Physics Sims</title>
+		<link rel="stylesheet" type="text/css" href="../assets/style.css">
 	</head>
 	<body>
 		<div id="nav">
@@ -13,13 +14,26 @@
 		</div>
 
 		<div id="controls">
+			<label for="controls-ball-radius">Radius</label>
+			<input id="controls-ball-radius" type="number"><br>
+
+			<label for="controls-ball-pos-x">Initial x</label>
+			<input id="controls-ball-pos-x" type="number"><br>
+
+			<label for="controls-ball-pos-y">Initial y</label>
+			<input id="controls-ball-pos-y" type="number"><br>
+
+			<label for="controls-ball-vel-x">Velocity x</label>
+			<input id="controls-ball-vel-x" type="number"><br>
+
+			<label for="controls-ball-vel-y">Velocity y</label>
+			<input id="controls-ball-vel-y" type="number"><br>
+
 			<button id="controls-change-model">Run</button>
 		</div>
 
 		<script src="../src/_PhysicsSim.js"></script>
 		<script src="../src/controls.js"></script>
 		<script src="../src/models/Ball.js"></script>
-		<script src="../src/models/SimplePendulum.js"></script>
-		<script src="../src/eval/runge-kutta.js"></script>
 	</body>
 </html>

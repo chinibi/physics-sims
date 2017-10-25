@@ -3,12 +3,12 @@
  *
  */
 
-PhysicsSim.model.Ball = function() {
-	this.x = 300;
-	this.y = 200;
-	this.radius = 15;
-	this.dx = 1;
-	this.dy = 0;
+PhysicsSim.model.Ball = function(params) {
+	this.x = params.x;
+	this.y = params.y;
+	this.radius = params.r;
+	this.dx = params.dx;
+	this.dy = params.dy;
 	this.draw = function() {
 		PhysicsSim.ctx.save();
 		PhysicsSim.ctx.beginPath();
@@ -24,11 +24,15 @@ PhysicsSim.model.Ball = function() {
 	}
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-	PhysicsSim.init('sim-canvas');
-});
-
 var $loadButton = document.getElementById('controls-change-model');
 $loadButton.addEventListener('click', function() {
-	PhysicsSim.loadModel('Ball');
+	var params = {
+		x:  Number(document.getElementById('controls-ball-pos-x').value) || 200,
+		y:  Number(document.getElementById('controls-ball-pos-y').value)  || 300,
+		r:  Number(document.getElementById('controls-ball-radius').value) || 5,
+		dx: Number(document.getElementById('controls-ball-vel-x').value) || 0,
+		dy: Number(document.getElementById('controls-ball-vel-y').value) || 0
+	};
+
+	PhysicsSim.loadModel('Ball', params);
 });

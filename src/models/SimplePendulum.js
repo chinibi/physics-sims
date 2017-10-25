@@ -13,14 +13,14 @@
  *     dω/dt = -(g/l)sin(θ)
  */
 
-PhysicsSim.model.SimplePendulum = function (pendulumLength, initialTheta, stepSize) {
-	this.pendulumLength = !isNaN(pendulumLength) && isFinite(pendulumLength) ? pendulumLength: 1;
-	this.initialTheta = !isNaN(initialTheta) && isFinite(initialTheta) ? initialTheta : Math.PI/4;
+PhysicsSim.model.SimplePendulum = function (params) {
+	this.pendulumLength = !isNaN(params.pendulumLength) && isFinite(params.pendulumLength) ? pendulumLength: 1;
+	this.initialTheta = !isNaN(params.initialTheta) && isFinite(params.initialTheta) ? params.initialTheta : Math.PI/4;
 	this.initialOmega = 0;
-	this.stepSize = stepSize;
+	this.stepSize = 1 / 60;
 
 	this.time = 0;
-	this.theta = initialTheta;
+	this.theta = params.initialTheta;
 	this.omega = 0;
 
 	this.ode1 = function(time = null, theta = null, omega = null) {
@@ -32,8 +32,14 @@ PhysicsSim.model.SimplePendulum = function (pendulumLength, initialTheta, stepSi
 		return -1 * g * Math.sin(theta) / this.pendulumLength;
 	}
 
-	this.nextStep = function() {
-		var result = SecondOrderODE_RK(this.ode1, this.ode2, this.stepSize, this.time, this.theta, this.omega);
+	this.draw = function() {
+		PhysicsSim.ctx.save();
+		PhysicsSim.ctx.translate(300, 0);
+		
+	}
+
+	this.setNextPosition = function() {
+		var result = PhysicsSim.iterMethod.RungeKutta_2ndOrderODE(this.ode1, this.ode2, this.stepSize, this.time, this.theta, this.omega);
 		this.time += this.stepSize;
 		this.theta = result.nextY;
 		this.omega = result.nextZ;
@@ -43,3 +49,16 @@ PhysicsSim.model.SimplePendulum = function (pendulumLength, initialTheta, stepSi
 		return {t: this.time, theta: this.theta, omega: this.omega};
 	}
 }
+
+var $loadButton = document.getElementById('controls-change-model');
+$loadButton.addEventListener('click', function() {
+	// var params = {
+	// 	x:  Number(document.getElementById('controls-ball-pos-x').value) || 200,
+	// 	y:  Number(document.getElementById('controls-ball-pos-y').value)  || 300,
+	// 	r:  Number(document.getElementById('controls-ball-radius').value) || 5,
+	// 	dx: Number(document.getElementById('controls-ball-vel-x').value) || 0,
+	// 	dy: Number(document.getElementById('controls-ball-vel-y').value) || 0
+	// };
+
+	PhysicsSim.loadModel('SimplePendulum', params);
+});

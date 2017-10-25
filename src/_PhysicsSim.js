@@ -20,9 +20,20 @@ var PhysicsSim = {
 		PhysicsSim.animationID = window.requestAnimationFrame(PhysicsSim.animateModel);
 	},
 
-	loadModel: function(modelName) {
-		window.cancelAnimationFrame(PhysicsSim.animationID);
-		PhysicsSim.activeModel = new PhysicsSim.model[modelName];
+	loadModel: function(modelName, optionalParams) {
+		if (!optionalParams) {
+			optionalParams = null;
+		}
+
+		if (PhysicsSim.animationID) {
+			window.cancelAnimationFrame(PhysicsSim.animationID);
+		}
+		
+		PhysicsSim.activeModel = new PhysicsSim.model[modelName](optionalParams);
 		PhysicsSim.animateModel();
 	}
 };
+
+document.addEventListener('DOMContentLoaded', function() {
+	PhysicsSim.init('sim-canvas');
+});
