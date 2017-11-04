@@ -28,7 +28,6 @@ PhysicsSim.iterMethod.RungeKutta = function(ode, stepSize, T_n, y_n) {
 PhysicsSim.iterMethod.RungeKutta_2ndOrderODE = function(ode1, ode2, stepSize, t, y, z) {
 	var k = [];
 	var l = [];
-
 	k[0] = ode1(t, y, z);
 	l[0] = ode2(t, y, z);
 	k[1] = ode1(t + stepSize / 2, y+k[0]*stepSize/2, z+l[0]*stepSize/2);
@@ -40,6 +39,5 @@ PhysicsSim.iterMethod.RungeKutta_2ndOrderODE = function(ode1, ode2, stepSize, t,
 
 	yNext = y + (stepSize / 6) * (k[0] + 2*k[1] + 2*k[2] + k[3]);
 	zNext = z + (stepSize / 6) * (l[0] + 2*l[1] + 2*l[2] + l[3]);
-
 	return {yNext: yNext, zNext: zNext};
 }

@@ -4,6 +4,7 @@ var PhysicsSim = {
 	animationID: null,
 	iterMethod: {},
 	model: {},
+	lengthScale: 100 // the number of pixels representing one meter
 
 	activeModel: {},
 
