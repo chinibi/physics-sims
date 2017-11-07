@@ -4,7 +4,12 @@ var PhysicsSim = {
 	animationID: null,
 	iterMethod: {},
 	model: {},
-	lengthScale: 100 // the number of pixels representing one meter
+	settings: {
+		lengthScale: 100, // the number of pixels representing one meter
+		zoomScale: 1, // zoom in and out by multiplying lengths by this factor
+		stepSize: 1 / 60
+	},
+	isAnimating: false,
 
 	activeModel: {},
 
@@ -12,9 +17,23 @@ var PhysicsSim = {
 		var canvas = document.getElementById(canvasElementSelector);
 		PhysicsSim.canvas = canvas;
 		PhysicsSim.ctx = canvas.getContext('2d');
+		PhysicsSim.canvas.addEventListener('wheel', function(e) {
+			PhysicsSim.settings.zoomScale += e.deltaY > 0 ? 0.1 : -0.1;
+			return false;
+		});
+	},
+
+	drawModel: function() {
+		if (!PhysicsSim.activeModel) {
+			return false;
+		}
+
+		PhysicsSim.ctx.clearRect(0, 0, PhysicsSim.canvas.clientWidth, PhysicsSim.canvas.clientHeight);
+		PhysicsSim.activeModel.draw();
 	},
 
 	animateModel: function() {
+		PhysicsSim.isAnimating = true;
 		PhysicsSim.ctx.clearRect(0, 0, PhysicsSim.canvas.clientWidth, PhysicsSim.canvas.clientHeight);
 		PhysicsSim.activeModel.draw();
 		PhysicsSim.activeModel.setNextPosition();
@@ -22,6 +41,11 @@ var PhysicsSim = {
 	},
 
 	loadModel: function(modelName, optionalParams) {
+		PhysicsSim.activeModel = new PhysicsSim.model[modelName](optionalParams);
+		PhysicsSim.drawModel();
+	},
+
+	runModel: function(modelName, optionalParams) {
 		if (!optionalParams) {
 			optionalParams = null;
 		}

@@ -11,11 +11,22 @@
 			<a href="../index.html">&#171; Back to the index page</a>
 		</div>
 		<div id="simulation">
-			<canvas id="sim-canvas" width="800" height="800"></canvas>
+			<canvas id="sim-canvas" width="500" height="400"></canvas>
 		</div>
 
 		<div id="controls">
+			<label for="controls-ball-pos-theta">Starting Angle</label>
+			<input class="input-controls" id="controls-ball-pos-theta" type="number" value="45"><br>
+
+			<label for="controls-pen-length">Length</label>
+			<input class="input-controls" id="controls-pen-length" type="number" value="80"><br>
+
+			<label for="controls-ball-mass">Mass</label>
+			<input class="input-controls" id="controls-ball-mass" type="number" value="10"><br>
+
 			<button id="controls-change-model">Run</button>
+			<button id="controls-pause-model">Pause</button>
+			<button id="controls-stop-model">Stop</button>
 		</div>
 
 		<script src="../src/_PhysicsSim.js"></script>
