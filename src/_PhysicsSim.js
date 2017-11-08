@@ -9,6 +9,7 @@ var PhysicsSim = {
 		zoomScale: 1, // zoom in and out by multiplying lengths by this factor
 		stepSize: 1 / 60
 	},
+	isActive: false,
 	isAnimating: false,
 	isDragging: false,
 
@@ -43,6 +44,21 @@ var PhysicsSim = {
 		PhysicsSim.animationID = window.requestAnimationFrame(PhysicsSim.animateModel);
 	},
 
+	pauseModel: function() {
+		if (PhysicsSim.isAnimating && PhysicsSim.animationID) {
+			PhysicsSim.isAnimating = false;
+			window.cancelAnimationFrame(PhysicsSim.animationID);
+		}
+	},
+
+	stopModel: function() {
+		if (PhysicsSim.isActive) {
+			PhysicsSim.isActive = false;
+			PhysicsSim.isAnimating = false;
+			window.cancelAnimationFrame(PhysicsSim.animationID);
+		}
+	},
+
 	loadModel: function(modelName, optionalParams) {
 		PhysicsSim.activeModel = new PhysicsSim.model[modelName](optionalParams);
 		PhysicsSim.drawModel();
@@ -57,7 +73,9 @@ var PhysicsSim = {
 			window.cancelAnimationFrame(PhysicsSim.animationID);
 		}
 		
-		PhysicsSim.activeModel = new PhysicsSim.model[modelName](optionalParams);
+		//PhysicsSim.activeModel = new PhysicsSim.model[modelName](optionalParams);
+		PhysicsSim.isActive = true;
+		PhysicsSim.isAnimating = true;
 		PhysicsSim.animateModel();
 	}
 };

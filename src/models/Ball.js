@@ -24,7 +24,7 @@ PhysicsSim.model.Ball = function(params) {
 	}
 }
 
-var $loadButton = document.getElementById('controls-change-model');
+var $loadButton = document.getElementById('controls-run-model');
 $loadButton.addEventListener('click', function() {
 	var params = {
 		x:  Number(document.getElementById('controls-ball-pos-x').value) || 200,

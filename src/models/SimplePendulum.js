@@ -97,15 +97,39 @@ document.addEventListener('DOMContentLoaded', function() {
 		$inputControls[i].addEventListener('change', function() {
 			var params = PhysicsSim.activeModel.getInputs();
 			if (!PhysicsSim.isAnimating) {
+				PhysicsSim.isActive = false;
 				PhysicsSim.loadModel('SimplePendulum', params);
 			}
 		});
 	}
 
-	var $runButton = document.getElementById('controls-change-model');
+	var $runButton = document.getElementById('controls-run-model');
 	$runButton.addEventListener('click', function() {
-		var params = PhysicsSim.activeModel.getInputs();
-		PhysicsSim.runModel('SimplePendulum', params);
+		if (!PhysicsSim.isAnimating) {
+			var params = PhysicsSim.activeModel.getInputs();
+			$runButton.innerHTML = 'Pause';
+			if (!PhysicsSim.isActive) {
+				PhysicsSim.runModel('SimplePendulum', params);
+			} else {
+				PhysicsSim.animateModel();
+			}
+		} else {
+			$runButton.innerHTML = 'Run';
+			PhysicsSim.pauseModel();
+		}
+	});
+
+	var $stopButton = document.getElementById('controls-stop-model');
+	$stopButton.addEventListener('click', function() {
+		PhysicsSim.stopModel();
+		var params = {
+			theta:  Number(document.getElementById('controls-ball-pos-theta').value) || 45, // degrees
+			length: Number(document.getElementById('controls-pen-length').value) || 80,
+			mass: Number(document.getElementById('controls-ball-mass').value) || 200
+		};
+		$runButton.innerHTML = 'Run';
+		params.theta = params.theta * (Math.PI/180);
+		PhysicsSim.loadModel('SimplePendulum', params);
 	});
 
 	PhysicsSim.canvas.addEventListener('wheel', function(e) {
@@ -116,18 +140,21 @@ document.addEventListener('DOMContentLoaded', function() {
 			PhysicsSim.activeModel.draw();
 		}
 		return false;
-	});	
+	});
 
 	PhysicsSim.canvas.addEventListener('mousedown', function(e) {
-		if (PhysicsSim.isAnimating) {
-			PhysicsSim.isAnimating = false;
-			window.cancelAnimationFrame(PhysicsSim.animationID);
-		}
 		PhysicsSim.isDragging = true;
 	});
 
 	PhysicsSim.canvas.addEventListener('mousemove', function(e) {
 		if (PhysicsSim.isDragging) {
+			if (PhysicsSim.isAnimating) {
+				PhysicsSim.isAnimating = false;
+				PhysicsSim.isActive = false;
+				$runButton.innerHTML = 'Run';
+				window.cancelAnimationFrame(PhysicsSim.animationID);
+			}
+
 			var rect = PhysicsSim.canvas.getBoundingClientRect();
 			var origin = PhysicsSim.activeModel.origin;
 			var mouseCartesian = {
@@ -144,6 +171,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				length: Number(document.getElementById('controls-pen-length').value) || 80,
 				mass: Number(document.getElementById('controls-ball-mass').value) || 200
 			};
+			PhysicsSim.isActive = false;
 			PhysicsSim.loadModel('SimplePendulum', params);
 		}
 	});
