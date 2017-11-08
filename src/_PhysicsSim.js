@@ -10,6 +10,7 @@ var PhysicsSim = {
 		stepSize: 1 / 60
 	},
 	isAnimating: false,
+	isDragging: false,
 
 	activeModel: {},
 
@@ -17,14 +18,11 @@ var PhysicsSim = {
 		var canvas = document.getElementById(canvasElementSelector);
 		PhysicsSim.canvas = canvas;
 		PhysicsSim.ctx = canvas.getContext('2d');
-		PhysicsSim.canvas.addEventListener('wheel', function(e) {
-			PhysicsSim.settings.zoomScale += e.deltaY > 0 ? 0.1 : -0.1;
-			return false;
-		});
 	},
 
 	drawModel: function() {
 		if (!PhysicsSim.activeModel) {
+			console.error('drawModel requires a model be loaded.');
 			return false;
 		}
 
@@ -33,6 +31,11 @@ var PhysicsSim = {
 	},
 
 	animateModel: function() {
+		if (!PhysicsSim.activeModel) {
+			console.error('animateModel requires a model be loaded.');
+			return false;
+		}
+
 		PhysicsSim.isAnimating = true;
 		PhysicsSim.ctx.clearRect(0, 0, PhysicsSim.canvas.clientWidth, PhysicsSim.canvas.clientHeight);
 		PhysicsSim.activeModel.draw();

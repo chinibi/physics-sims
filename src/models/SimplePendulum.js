@@ -16,11 +16,10 @@
  */
 
 PhysicsSim.model.SimplePendulum = function (params) {
-	//this.pendulumLength = !isNaN(params.pendulumLength) && isFinite(params.pendulumLength) ? pendulumLength: 200;
-	//this.initialTheta = !isNaN(params.initialTheta) && isFinite(params.initialTheta) ? params.initialTheta : Math.PI/4;
 	this.pendulumLength = params.length || 80;
 	this.initialTheta = params.theta || Math.PI/4;
 	this.initialOmega = 0;
+	this.origin = {x: 250.5, y: 180.5}; // location of the origin on the canvas
 
 	this.time = 0;
 	this.theta = this.initialTheta;
@@ -42,9 +41,10 @@ PhysicsSim.model.SimplePendulum = function (params) {
 		var ballRadius = PhysicsSim.settings.zoomScale * 10;
 
 		PhysicsSim.ctx.save();
-		PhysicsSim.ctx.translate(250.5, 180.5);
+		PhysicsSim.ctx.translate(this.origin.x, this.origin.y);
 		PhysicsSim.ctx.beginPath();
 		PhysicsSim.ctx.moveTo(0, 0);
+		PhysicsSim.ctx.lineWidth = 1.0 * PhysicsSim.settings.zoomScale;
 		PhysicsSim.ctx.lineTo(xPos, yPos);
 		PhysicsSim.ctx.stroke();
 		PhysicsSim.ctx.closePath();
@@ -77,6 +77,7 @@ PhysicsSim.model.SimplePendulum = function (params) {
 	}
 }
 
+
 document.addEventListener('DOMContentLoaded', function() {
 	var params = {
 		theta:  Number(document.getElementById('controls-ball-pos-theta').value) || 45, // degrees
@@ -85,21 +86,74 @@ document.addEventListener('DOMContentLoaded', function() {
 	};
 	params.theta = params.theta * (Math.PI / 180);
 	PhysicsSim.loadModel('SimplePendulum', params);
-});
 
-var $inputControls = document.getElementsByClassName('input-controls');
-for (var i = 0; i < $inputControls.length; i++) {
-	$inputControls[i].addEventListener('change', function() {
+	/****
+	 *
+	 *	Event listeners
+	 *
+	 ****/
+	var $inputControls = document.getElementsByClassName('input-controls');
+	for (var i = 0; i < $inputControls.length; i++) {
+		$inputControls[i].addEventListener('change', function() {
+			var params = PhysicsSim.activeModel.getInputs();
+			if (!PhysicsSim.isAnimating) {
+				PhysicsSim.loadModel('SimplePendulum', params);
+			}
+		});
+	}
+
+	var $runButton = document.getElementById('controls-change-model');
+	$runButton.addEventListener('click', function() {
 		var params = PhysicsSim.activeModel.getInputs();
-		if (!PhysicsSim.isAnimating) {
+		PhysicsSim.runModel('SimplePendulum', params);
+	});
+
+	PhysicsSim.canvas.addEventListener('wheel', function(e) {
+		PhysicsSim.settings.zoomScale += e.deltaY > 0 ? 0.1 : -0.1;
+
+		if (PhysicsSim.activeModel) {
+			PhysicsSim.ctx.clearRect(0, 0, PhysicsSim.canvas.clientWidth, PhysicsSim.canvas.clientHeight)			
+			PhysicsSim.activeModel.draw();
+		}
+		return false;
+	});	
+
+	PhysicsSim.canvas.addEventListener('mousedown', function(e) {
+		if (PhysicsSim.isAnimating) {
+			PhysicsSim.isAnimating = false;
+			window.cancelAnimationFrame(PhysicsSim.animationID);
+		}
+		PhysicsSim.isDragging = true;
+	});
+
+	PhysicsSim.canvas.addEventListener('mousemove', function(e) {
+		if (PhysicsSim.isDragging) {
+			var rect = PhysicsSim.canvas.getBoundingClientRect();
+			var origin = PhysicsSim.activeModel.origin;
+			var mouseCartesian = {
+				x: e.clientX - rect.left - origin.x,
+				y: e.clientY - rect.top - origin.y
+			};
+
+			// Usually it's Math.atan2(y,x) but we want theta to start from the negative-y axis going counterclockwise
+			var mouseAngle = Math.atan2(mouseCartesian.x, mouseCartesian.y);
+
+			document.getElementById('controls-ball-pos-theta').value = Math.floor(mouseAngle * (180 / Math.PI));
+			var params = {
+				theta:  mouseAngle, // degrees
+				length: Number(document.getElementById('controls-pen-length').value) || 80,
+				mass: Number(document.getElementById('controls-ball-mass').value) || 200
+			};
 			PhysicsSim.loadModel('SimplePendulum', params);
 		}
 	});
-}
 
-var $runButton = document.getElementById('controls-change-model');
-$runButton.addEventListener('click', function() {
-	var params = PhysicsSim.activeModel.getInputs();
-	PhysicsSim.runModel('SimplePendulum', params);
+	window.addEventListener('mouseup', function(e) {
+		if (PhysicsSim.isDragging) {
+			PhysicsSim.isDragging = false;
+		}
+	});
 });
+
+
 
