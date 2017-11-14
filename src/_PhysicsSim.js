@@ -16,8 +16,8 @@ var PhysicsSim = {
 	activeModel: {},
 
 	init: function(canvasElementSelector) {
-		var canvas = document.getElementById(canvasElementSelector);
-		PhysicsSim.canvas = canvas;
+		var simCanvas = document.getElementById(canvasElementSelector);
+		PhysicsSim.canvas = simCanvas;
 		PhysicsSim.ctx = canvas.getContext('2d');
 	},
 

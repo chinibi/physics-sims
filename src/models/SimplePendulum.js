@@ -25,11 +25,11 @@ PhysicsSim.model.SimplePendulum = function (params) {
 	this.theta = this.initialTheta;
 	this.omega = 0;
 
-	this.ode1 = (function(time = null, theta = null, omega = null) {
+	this.ode1 = (function(time, theta, omega) {
 		return omega;
 	}).bind(this);
 
-	this.ode2 = (function(time = null, theta = null, omega = null) {
+	this.ode2 = (function(time, theta, omega) {
 		var g = 9.81 * 100;
 		return -1 * g * Math.sin(theta) / this.pendulumLength;
 	}).bind(this);
