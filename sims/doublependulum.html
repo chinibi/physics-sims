@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Physics Sims - Double Pendulum</title>
+
+		<link rel="stylesheet" href="../assets/style.css">
+	</head>
+	<body>
+		<div id="nav">
+			<a href="../index.html">&#171; Back to the index page</a>
+		</div>
+		<div id="simulation">
+			<canvas id="sim-canvas" width="500" height="400"></canvas>
+			<canvas id="motion-trail-canvas" width="500" height="400"></canvas>
+		</div>
+
+		<div id="controls">
+			<div>
+				<button id="controls-run-model">Run</button>
+			<!-- <button id="controls-pause-model">Pause</button> -->
+				<button id="controls-nextframe-model">Next Frame</button>
+				<button id="controls-stop-model">Reset</button>
+			</div>
+			<div class="object-control" style="float: left">
+				<h3>Pendulum 1</h3>
+				<label for="controls-ball-pos-theta">Starting Angle (degrees)</label>
+				<input class="input-controls" id="controls-pen1-pos-theta" type="number" value="45"><br>
+
+				<label for="controls-pen-length">Length (cm)</label>
+				<input class="input-controls" id="controls-pen1-length" type="number" value="80"><br>
+
+				<label for="controls-ball-mass">Mass (kg)</label>
+				<input class="input-controls" id="controls-pen1-mass" type="number" value="1"><br>
+			</div>
+			<div class="object-control" style="float: left">
+				<h3>Pendulum 2</h3>
+				<label for="controls-ball-pos-theta">Starting Angle (degrees)</label>
+				<input class="input-controls" id="controls-pen2-pos-theta" type="number" value="135"><br>
+
+				<label for="controls-pen-length">Length (cm)</label>
+				<input class="input-controls" id="controls-pen2-length" type="number" value="80"><br>
+
+				<label for="controls-ball-mass">Mass (kg)</label>
+				<input class="input-controls" id="controls-pen2-mass" type="number" value="1"><br>
+			</div>
+			<br>
+		</div>
+
+		<script src="../src/_PhysicsSim.js"></script>
+		<script src="../src/controls.js"></script>
+		<script src="../src/models/DoublePendulum.js"></script>
+		<script src="../src/eval/runge-kutta.js"></script>
+	</body>
+</html>
