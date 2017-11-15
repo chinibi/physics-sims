@@ -41,3 +41,32 @@ PhysicsSim.iterMethod.RungeKutta_2ndOrderODE = function(ode1, ode2, stepSize, t,
 	zNext = z + (stepSize / 6) * (l[0] + 2*l[1] + 2*l[2] + l[3]);
 	return {yNext: yNext, zNext: zNext};
 }
+
+PhysicsSim.iterMethod.RungeKutta_DoublePendulum = function(body1, body2, stepSize, t) {
+	var bodies = [body1, body2];
+
+	var o1 = []; // theta-1-dot
+	var w1 = []; // omega-1-dot
+	var o2 = []; // theta-2-dot
+	var w2 = []; // omega-2-dot
+
+	o1[0] = body1.ode1(t, body1, body2);
+	w1[0] = body1.ode2(t, body1, body2);
+	o2[0] = body2.ode1(t, body1, body2);
+	w2[0] = body2.ode2(t, body1, body2);
+
+	// the object spread operator available in Babel, TypeScript, and Node v8.0+ would've been nice here
+	var body1_step1 = Object.assign({}, body1, {theta: body1.theta + o1[0]*stepSize/2, omega: body1.omega + w1[0]*stepSize/2});
+	var body2_step1 = Object.assign({}, body2, {theta: body2.theta + o2[0]*stepSize/2, omega: body2.omega + w2[0]*stepSize/2});
+	o1[1] = body1.ode1(t+stepSize/2, body1_step1, body2_step1);
+	w1[1] = body1.ode2(t+stepSize/2, body1_step1, body2_step1);
+	o2[1] = body2.ode1(t+stepSize/2, body1_step1, body2_step1);
+	w2[1] = body2.ode2(t+stepSize/2, body1_step1, body2_step1);
+
+	var body1_step2 = Object.assign({}, body1, {theta: body1.theta + o1[1]*stepSize/2, omega: body1.omega + w1[1]*stepSize/2});
+	var body2_step2 = Object.assign({}, body1, {theta: body2.theta + o2[1]*stepSize/2, omega: body2.omega + w2[1]*stepSize/2});
+	o1[2] = body1.ode1(t+stepSize/2, body1_step2, body2_step2);
+	w1[2] = body1.ode2(t+stepSize/2, body1_step2, body2_step2);
+	o2[2] = body2.ode1(t+stepSize/2, body1_step2, body2_step2);
+	w2[2] = body2.ode2(t+stepSize/2, body1_step2, body2_step2);
+} 

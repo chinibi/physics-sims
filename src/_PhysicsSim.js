@@ -18,7 +18,7 @@ var PhysicsSim = {
 	init: function(canvasElementSelector) {
 		var simCanvas = document.getElementById(canvasElementSelector);
 		PhysicsSim.canvas = simCanvas;
-		PhysicsSim.ctx = canvas.getContext('2d');
+		PhysicsSim.ctx = simCanvas.getContext('2d');
 	},
 
 	drawModel: function() {
