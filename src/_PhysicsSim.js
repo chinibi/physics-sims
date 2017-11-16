@@ -1,6 +1,9 @@
 var PhysicsSim = {
 	canvas: null,
 	ctx: null,
+	trailEnabled: false,
+	trailCanvas: null,
+	trailCtx: null,
 	animationID: null,
 	iterMethod: {},
 	model: {},
@@ -16,9 +19,12 @@ var PhysicsSim = {
 	activeModel: {},
 
 	init: function(canvasElementSelector) {
-		var canvas = document.getElementById(canvasElementSelector);
-		PhysicsSim.canvas = canvas;
-		PhysicsSim.ctx = canvas.getContext('2d');
+		var simCanvas = document.getElementById(canvasElementSelector);
+		var trailCanvas = document.getElementById('motion-trail-canvas');
+		PhysicsSim.canvas = simCanvas;
+		PhysicsSim.ctx = simCanvas.getContext('2d');
+		PhysicsSim.trailCanvas = trailCanvas;
+		PhysicsSim.trailCtx = trailCanvas.getContext('2d');
 	},
 
 	drawModel: function() {
@@ -39,6 +45,9 @@ var PhysicsSim = {
 
 		PhysicsSim.isAnimating = true;
 		PhysicsSim.ctx.clearRect(0, 0, PhysicsSim.canvas.clientWidth, PhysicsSim.canvas.clientHeight);
+		PhysicsSim.trailCtx.fillStyle = 'rgba(255,255,255,0.05)';
+		PhysicsSim.trailCtx.fillRect(0, 0, PhysicsSim.canvas.clientWidth, PhysicsSim.canvas.clientHeight);
+
 		PhysicsSim.activeModel.draw();
 		PhysicsSim.activeModel.setNextPosition();
 		PhysicsSim.animationID = window.requestAnimationFrame(PhysicsSim.animateModel);
@@ -61,6 +70,7 @@ var PhysicsSim = {
 
 	loadModel: function(modelName, optionalParams) {
 		PhysicsSim.activeModel = new PhysicsSim.model[modelName](optionalParams);
+		PhysicsSim.trailCtx.clearRect(0, 0, PhysicsSim.canvas.clientWidth, PhysicsSim.canvas.clientHeight);
 		PhysicsSim.drawModel();
 	},
 

@@ -41,3 +41,51 @@ PhysicsSim.iterMethod.RungeKutta_2ndOrderODE = function(ode1, ode2, stepSize, t,
 	zNext = z + (stepSize / 6) * (l[0] + 2*l[1] + 2*l[2] + l[3]);
 	return {yNext: yNext, zNext: zNext};
 }
+
+PhysicsSim.iterMethod.RungeKutta_DoublePendulum = function(body1, body2, stepSize, t) {
+	var bodies = [body1, body2];
+
+	var o1 = []; // next position of pendulum 1
+	var w1 = []; // next speed of pendulum 1
+	var o2 = []; // next position of pendulum 2
+	var w2 = []; // next speed of pendulum 2
+
+	for (var i=0; i<4; i++) {
+		var stepModifier;
+		switch(i) {
+			case 0:
+				stepModifier = 0;
+				break;
+			case 1:
+			case 2:
+				stepModifier = stepSize/2;
+				break;
+			case 3:
+				stepModifier = stepSize;
+				break;
+		}
+
+		var body1Params = Object.assign({}, body1);
+		var body2Params = Object.assign({}, body2);
+		if (i > 0) {
+			body1Params.theta = body1.theta + o1[i-1]*stepModifier;
+			body1Params.omega = body1.omega + w1[i-1]*stepModifier;
+			body2Params.theta = body2.theta + o2[i-1]*stepModifier;
+			body2Params.omega = body2.omega + w2[i-1]*stepModifier;
+		}
+		o1.push(body1.ode1(t+stepModifier, body1Params, body2Params));
+		w1.push(body1.ode2(t+stepModifier, body1Params, body2Params));
+		o2.push(body2.ode1(t+stepModifier, body1Params, body2Params));
+		w2.push(body2.ode2(t+stepModifier, body1Params, body2Params));		
+	}
+
+	var pend1Next = {
+		theta: body1.theta + (stepSize / 6) * (o1[0] + 2*o1[1] + 2*o1[2] + o1[3]),
+		omega: body1.omega + (stepSize / 6) * (w1[0] + 2*w1[1] + 2*w1[2] + w1[3])
+	};
+	var pend2Next = {
+		theta: body2.theta + (stepSize / 6) * (o2[0] + 2*o2[1] + 2*o2[2] + o2[3]),
+		omega: body2.omega + (stepSize / 6) * (w2[0] + 2*w2[1] + 2*w2[2] + w2[3])
+	};
+	return {pend1Next: pend1Next, pend2Next: pend2Next};
+} 

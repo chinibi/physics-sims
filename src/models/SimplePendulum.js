@@ -25,11 +25,11 @@ PhysicsSim.model.SimplePendulum = function (params) {
 	this.theta = this.initialTheta;
 	this.omega = 0;
 
-	this.ode1 = (function(time = null, theta = null, omega = null) {
+	this.ode1 = (function(time, theta, omega) {
 		return omega;
 	}).bind(this);
 
-	this.ode2 = (function(time = null, theta = null, omega = null) {
+	this.ode2 = (function(time, theta, omega) {
 		var g = 9.81 * 100;
 		return -1 * g * Math.sin(theta) / this.pendulumLength;
 	}).bind(this);
@@ -52,18 +52,18 @@ PhysicsSim.model.SimplePendulum = function (params) {
 		PhysicsSim.ctx.fillStyle = 'blue';
 		PhysicsSim.ctx.fill();
 		PhysicsSim.ctx.restore();
-	}
+	};
 
 	this.setNextPosition = function() {
 		var result = PhysicsSim.iterMethod.RungeKutta_2ndOrderODE(this.ode1, this.ode2, PhysicsSim.settings.stepSize, this.time, this.theta, this.omega);
-		this.time += this.stepSize;
+		this.time += PhysicsSim.settings.stepSize;
 		this.theta = result.yNext;
 		this.omega = result.zNext;
-	}
+	};
 
 	this.getState = function() {
 		return {t: this.time, theta: this.theta, omega: this.omega};
-	}
+	};
 
 	this.getInputs = function() {
 		var params = {
@@ -74,8 +74,8 @@ PhysicsSim.model.SimplePendulum = function (params) {
 		params.theta = params.theta * (Math.PI / 180);
 
 		return params;
-	}
-}
+	};
+};
 
 
 document.addEventListener('DOMContentLoaded', function() {
