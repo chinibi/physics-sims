@@ -14,6 +14,7 @@
 PhysicsSim.model.DoublePendulum = function (params) {
 	this.pendulum1 = {
 		color: 'red',
+		trailsEnabled: params.trailsEnabled,
 		length: params.pendulum1.length || 80,
 		initialTheta: params.pendulum1.theta || Math.PI/4,
 		initialOmega: 0,
@@ -113,7 +114,13 @@ PhysicsSim.model.DoublePendulum = function (params) {
 		var ballRadius = PhysicsSim.settings.zoomScale * 10;
 
 		PhysicsSim.ctx.save();
+		if (PhysicsSim.trailsEnabled) {
+			PhysicsSim.trailCtx.save();	
+		}
 		PhysicsSim.ctx.translate(this.pendulum1.origin.x, this.pendulum1.origin.y);
+		if (PhysicsSim.trailsEnabled) {
+			PhysicsSim.trailCtx.translate(this.pendulum1.origin.x, this.pendulum1.origin.y);
+		}
 		PhysicsSim.ctx.beginPath();
 		PhysicsSim.ctx.moveTo(0, 0);
 		PhysicsSim.ctx.lineWidth = 1.0 * PhysicsSim.settings.zoomScale;
@@ -123,6 +130,13 @@ PhysicsSim.model.DoublePendulum = function (params) {
 		PhysicsSim.ctx.arc(x1Pos, y1Pos, ballRadius, 0, 2*Math.PI);
 		PhysicsSim.ctx.fillStyle = this.pendulum1.color;
 		PhysicsSim.ctx.fill();
+		if (PhysicsSim.trailsEnabled) {
+			PhysicsSim.trailCtx.beginPath();
+			PhysicsSim.trailCtx.arc(x1Pos, y1Pos, 2, 0, 2*Math.PI);
+			PhysicsSim.trailCtx.fillStyle = this.pendulum1.color;
+			PhysicsSim.trailCtx.fill();
+			PhysicsSim.trailCtx.closePath();
+		}
 		PhysicsSim.ctx.beginPath();
 		PhysicsSim.ctx.moveTo(x1Pos, y1Pos);
 		PhysicsSim.ctx.lineTo(x2Pos, y2Pos);
@@ -131,7 +145,17 @@ PhysicsSim.model.DoublePendulum = function (params) {
 		PhysicsSim.ctx.arc(x2Pos, y2Pos, ballRadius, 0, 2*Math.PI);
 		PhysicsSim.ctx.fillStyle = this.pendulum2.color;
 		PhysicsSim.ctx.fill();
+		if (PhysicsSim.trailsEnabled) {
+			PhysicsSim.trailCtx.beginPath();
+			PhysicsSim.trailCtx.arc(x2Pos, y2Pos, 2, 0, 2*Math.PI);
+			PhysicsSim.trailCtx.fillStyle = this.pendulum2.color;
+			PhysicsSim.trailCtx.fill();
+			PhysicsSim.trailCtx.closePath();
+		}
 		PhysicsSim.ctx.restore();
+		if (PhysicsSim.trailsEnabled) {
+			PhysicsSim.trailCtx.restore();
+		}
 	};
 
 	this.setNextPosition = function() {
@@ -215,8 +239,10 @@ document.addEventListener('DOMContentLoaded', function() {
 			var params = PhysicsSim.activeModel.getInputs();
 			$runButton.innerHTML = 'Pause';
 			if (!PhysicsSim.isActive) {
+				PhysicsSim.isAnimating = true;
 				PhysicsSim.runModel('DoublePendulum', params);
 			} else {
+				PhysicsSim.isAnimating = true;
 				PhysicsSim.animateModel();
 			}
 		} else {
@@ -227,6 +253,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	var $nextFrameButton = document.getElementById('controls-nextframe-model');
 	$nextFrameButton.addEventListener('click', function() {
+		if (PhysicsSim.isAnimating) {
+			$runButton.innerHTML = 'Run';
+			PhysicsSim.isAnimating = false;
+			PhysicsSim.pauseModel();
+		}
 		PhysicsSim.ctx.clearRect(0, 0, PhysicsSim.canvas.clientWidth, PhysicsSim.canvas.clientHeight);
 		PhysicsSim.activeModel.setNextPosition();
 		PhysicsSim.activeModel.draw();
@@ -238,6 +269,11 @@ document.addEventListener('DOMContentLoaded', function() {
 		var params = PhysicsSim.activeModel.getInputs();
 		$runButton.innerHTML = 'Run';
 		PhysicsSim.loadModel('DoublePendulum', params);
+	});
+
+	var $motionTrailButton = document.getElementById('controls-enable-motion-trail');
+	$motionTrailButton.addEventListener('change', function(e) {
+		PhysicsSim.trailsEnabled = e.target.checked;
 	});
 
 	PhysicsSim.canvas.addEventListener('wheel', function(e) {

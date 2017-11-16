@@ -22,27 +22,34 @@
 				<button id="controls-nextframe-model">Next Frame</button>
 				<button id="controls-stop-model">Reset</button>
 			</div>
-			<div class="object-control" style="float: left">
-				<h3>Pendulum 1</h3>
-				<label for="controls-ball-pos-theta">Starting Angle (degrees)</label>
-				<input class="input-controls" id="controls-pen1-pos-theta" type="number" value="45"><br>
+			<div>
+				<div class="object-control" style="float: left">
+					<h3>Pendulum 1</h3>
+					<label for="controls-ball-pos-theta">Starting Angle (degrees)</label>
+					<input class="input-controls" id="controls-pen1-pos-theta" type="number" value="45"><br>
 
-				<label for="controls-pen-length">Length (cm)</label>
-				<input class="input-controls" id="controls-pen1-length" type="number" value="80"><br>
+					<label for="controls-pen-length">Length (cm)</label>
+					<input class="input-controls" id="controls-pen1-length" type="number" value="80"><br>
 
-				<label for="controls-ball-mass">Mass (kg)</label>
-				<input class="input-controls" id="controls-pen1-mass" type="number" value="1"><br>
+					<label for="controls-ball-mass">Mass (kg)</label>
+					<input class="input-controls" id="controls-pen1-mass" type="number" value="1"><br>
+				</div>
+				<div class="object-control" style="float: left">
+					<h3>Pendulum 2</h3>
+					<label for="controls-ball-pos-theta">Starting Angle (degrees)</label>
+					<input class="input-controls" id="controls-pen2-pos-theta" type="number" value="135"><br>
+
+					<label for="controls-pen-length">Length (cm)</label>
+					<input class="input-controls" id="controls-pen2-length" type="number" value="80"><br>
+
+					<label for="controls-ball-mass">Mass (kg)</label>
+					<input class="input-controls" id="controls-pen2-mass" type="number" value="1"><br>
+				</div>
+				<div style="clear: both"></div>
 			</div>
-			<div class="object-control" style="float: left">
-				<h3>Pendulum 2</h3>
-				<label for="controls-ball-pos-theta">Starting Angle (degrees)</label>
-				<input class="input-controls" id="controls-pen2-pos-theta" type="number" value="135"><br>
-
-				<label for="controls-pen-length">Length (cm)</label>
-				<input class="input-controls" id="controls-pen2-length" type="number" value="80"><br>
-
-				<label for="controls-ball-mass">Mass (kg)</label>
-				<input class="input-controls" id="controls-pen2-mass" type="number" value="1"><br>
+			<div>
+				<input type="checkbox" id="controls-enable-motion-trail" />
+				<label for="controls-enable-motion-trail">Motion trails</label>
 			</div>
 			<br>
 		</div>
